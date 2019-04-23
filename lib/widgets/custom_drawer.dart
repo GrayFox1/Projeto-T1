@@ -49,6 +49,7 @@ class CustomDrawer extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   color: Colors.transparent,
                                   image: DecorationImage(
+                                    
                                     fit: BoxFit.cover,
                                     image: model.isLoggedIn()
                                         ? NetworkImage(model.userData["foto"])

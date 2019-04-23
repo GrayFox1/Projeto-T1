@@ -1,36 +1,42 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:so_tops/models/user_model.dart';
+import 'package:so_tops/screens/home_screen.dart';
 import 'package:so_tops/screens/login_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:so_tops/widgets/user_avatar.dart';
 
 
 final formKey = GlobalKey<FormState>();
 final scaffoldKey = GlobalKey<ScaffoldState>();
 
-final nameController = TextEditingController();
-final emailController = TextEditingController();
-final passController = TextEditingController();
+TextEditingController nameController;
 
-class SignUpScreen extends StatefulWidget {
+class EditScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _EditScreenState createState() => _EditScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _EditScreenState extends State<EditScreen> {
 
   File userFoto;
 
   @override
+  void initState() {
+    super.initState();
+      nameController = TextEditingController(text: UserModel.of(context).userData["name"]);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       appBar: AppBar(
-        title: Text("Criar Conta"),
-        centerTitle: true,
+            title: Text("Editar Perfil"),
+            centerTitle: true,
       ),
+      key: scaffoldKey,
       body: ScopedModelDescendant<UserModel>(builder: (context, child, model) {
         if (model.isLoading) {
           return Center(child: CircularProgressIndicator());
@@ -54,7 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     image: DecorationImage(
                       fit: BoxFit.cover,
                       image: userFoto != null ? 
-                    FileImage(File(userFoto.path)) : AssetImage("assets/user.png"),
+                    FileImage(File(userFoto.path)) : model.userData["foto"] != null ?  NetworkImage(model.userData["foto"]) : AssetImage("assets/user.png"),
                     ),
                   ),
                 ),
@@ -63,116 +69,51 @@ class _SignUpScreenState extends State<SignUpScreen> {
               TextFormField(
                 controller: nameController,
                 decoration: InputDecoration(
-                  border: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.yellow)),
+                  border: UnderlineInputBorder(),
                   hintText: "Nome",
                 ),
                 validator: (text) {
                   if (text.isEmpty) return "Nome Inválido!";
                 },
               ),
-              SizedBox(height: 10.0),
-              TextFormField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  hintText: "E-mail",
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (text) {
-                  if (text.isEmpty || !text.contains("@"))
-                    return "E-mail inválido!";
-                },
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              TextFormField(
-                controller: passController,
-                decoration: InputDecoration(hintText: "Senha"),
-                obscureText: true,
-                validator: (text) {
-                  if (text.isEmpty || text.length < 4) return "Senha inválida!";
-                },
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              SizedBox(height: 40.0),
+              SizedBox(height: 50.0),
               SizedBox(
                 height: 44.0,
                 child: RaisedButton(
-                  child: Text("Cadastrar", style: TextStyle(fontSize: 18.0)),
+                  child: Text("Atualizar", style: TextStyle(fontSize: 18.0)),
                   textColor: Colors.white,
                   color: Theme.of(context).primaryColor,
                   onPressed: () async {
                     if (formKey.currentState.validate()) {
 
-                      Map<String, dynamic> userData = {
-                        "name": nameController.text,
-                        "email": emailController.text,
-                        "foto": userFoto.path
-                      };
+                      Map<String, dynamic> userData;
 
-                      model.signUp(
-                          userData: userData,
-                          pass: passController.text,
-                          onSuccess: onSuccess,
-                          onFail: onFail);
+                      if(userFoto != null){
+                        userData = {
+                          "name" : nameController.text,
+                          "foto" : userFoto.path
+                        };
+                      }
+                      else{
+                        userData = {
+                          "name" : nameController.text,
+                          "foto" : model.userData["foto"]
+                        };
+                      }
+                      
+                      model.updateUserData(userData);
+                      Navigator.of(context).pop();
                       
                     }
                   },
                 ),
               ),
               SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Já possui conta?",
-                      style: TextStyle(fontSize: 12.0)),
-                      FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => LoginScreen())
-                        );
-                      },
-                      child: Text(
-                        "Fazer Login", 
-                        style: TextStyle(
-                            fontSize: 12.0,
-                            color: Theme.of(context).buttonColor)
-                      ),
-                    ),
-                    ],
-                  ),
             ],
           ),
         );
       }),
     );
-  }
-
-  void onSuccess() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Usuário criado com sucesso!", 
-      textAlign: TextAlign.center,),
-      backgroundColor: Theme.of(context).primaryColor,
-      duration: Duration(seconds: 2),
-    ));
-    Future.delayed(Duration(seconds: 2)).then((_) {
-      Navigator.of(context).pop();
-    });
-  }
-
-  void onFail({@required String errorMsg, @required bool error}) {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(
-        errorMsg,
-        textAlign: TextAlign.center,
-      ),
-      backgroundColor:
-          (error) ? Colors.redAccent : Theme.of(context).primaryColor,
-      duration: Duration(seconds: 2),
-    ));
   }
 
   void editarFoto(BuildContext context) {

@@ -83,6 +83,12 @@ class UserModel extends Model {
 
     }
 
+    Future<Null> updateUserData(Map<String, dynamic> userData){
+      this.userData = userData;
+      Firestore.instance.collection("users").document(firebaseUser.uid).updateData(userData);
+      notifyListeners();
+    }
+
     Future<Null> loadCurrentUser() async {
       if(firebaseUser == null)
         firebaseUser = await auth.currentUser();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:so_tops/models/user_model.dart';
+import 'package:so_tops/screens/edit_screen.dart';
 
 class DrawerTile extends StatelessWidget {
 
@@ -20,7 +21,15 @@ class DrawerTile extends StatelessWidget {
            if(text == "Sair"){
             UserModel.of(context).signOut();
           } 
-          pageController.jumpToPage(page);
+          else if(text == "Editar Perfil"){
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => EditScreen())
+            );
+          }
+          else{
+            pageController.jumpToPage(page);
+          }
+          
         } ,
         child: Container(
           height: 60.0,

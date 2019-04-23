@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:so_tops/screens/edit_screen.dart';
 import 'package:so_tops/screens/signup_screen.dart';
 import 'package:so_tops/tabs/home_tab.dart';
 import 'package:so_tops/widgets/custom_drawer.dart';
@@ -69,7 +70,7 @@ class HomeScreen extends StatelessWidget {
           drawer: CustomDrawer(pageController),
         ),
         Scaffold(    // TELA 6 (Editar Perfil)
-          body: SignUpScreen(),
+          body: EditScreen(),
         ),
       ],
     );
