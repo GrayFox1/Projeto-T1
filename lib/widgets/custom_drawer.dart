@@ -92,7 +92,7 @@ class CustomDrawer extends StatelessWidget {
               DrawerTile(FontAwesomeIcons.home, "Início", pageController, 0),
               DrawerTile(FontAwesomeIcons.film, "Filmes", pageController, 1),
               DrawerTile(FontAwesomeIcons.gamepad, "Jogos", pageController, 2),
-              DrawerTile(Icons.restaurant, "Restaurantes", pageController, 3),
+              DrawerTile(Icons.location_on, "Dicas", pageController, 3),
               DrawerTile(
                   FontAwesomeIcons.solidStar, "Favoritos", pageController, 4),
               Container(
