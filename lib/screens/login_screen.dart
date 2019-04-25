@@ -1,18 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:so_tops/animation/button_animation.dart';
 import 'package:so_tops/models/user_model.dart';
 import 'package:so_tops/screens/signup_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:so_tops/widgets/custom_button.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final emailController = TextEditingController();
   final passController = TextEditingController();
+
+  AnimationController loginButtonController;
+  var animationStatus = 0;
+
+   Future<Null> playAnimation() async {
+    try {
+      await loginButtonController.forward();
+      await loginButtonController.reverse();
+    } on TickerCanceled {}
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loginButtonController = new AnimationController(
+      duration: Duration(milliseconds: 3000), 
+      vsync: this,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,106 +45,103 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         body: ScopedModelDescendant<UserModel>(
           builder: (context, child, model) {
-            if (model.isLoading) {
-              return Center(child: CircularProgressIndicator());
-            }
-            return Form(
-              key: formKey,
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 50.0),
-                children: <Widget>[
-                  SizedBox(height: 200.0),
-                  TextFormField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      hintText: "E-mail",
+            return ListView(
+              padding: const EdgeInsets.all(0.0),
+              children: <Widget>[
+                Stack(
+                  alignment: AlignmentDirectional.bottomCenter,
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 150.0),
+                          child: Form(
+                            key: formKey,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                TextFormField(
+                                  controller: emailController,
+                                  decoration: InputDecoration(
+                                  hintText: "E-mail",
+                                  ),
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator: (text) {
+                                    if(text.isEmpty || !text.contains("@"))
+                                      return "E-mail inválido!";
+                                  },
+                                ),
+                                SizedBox(height: 10.0),
+                                TextFormField(
+                                  controller: passController,
+                                  decoration: InputDecoration(hintText: "Senha"),
+                                  obscureText: true,
+                                  validator: (text) {
+                                    if (text.isEmpty || text.length < 4)
+                                      return "Senha inválida!";
+                                  },
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      if(emailController.text.isEmpty){
+                                        onFail(errorMsg: "Insira um e-mail válido para recuperar a senha", error: true);
+                                      }
+                                      else{
+                                        model.recoverPass(emailController.text);
+                                        onFail(errorMsg: "Confira seu e-mail!", error: false);
+                                      }
+                                    },
+                                  padding: EdgeInsets.zero,
+                                  child: Text(
+                                    "Esqueci minha senha",
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                    fontSize: 12.0,
+                                    color: Theme.of(context).buttonColor)
+                                  ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (text) {
-                      if (text.isEmpty || !text.contains("@"))
-                        return "E-mail inválido!";
-                    },
-                  ),
-                  SizedBox(height: 10.0),
-                  TextFormField(
-                    controller: passController,
-                    decoration: InputDecoration(hintText: "Senha"),
-                    obscureText: true,
-                    validator: (text) {
-                      if (text.isEmpty || text.length < 4)
-                        return "Senha inválida!";
-                    },
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: FlatButton(
-                      onPressed: () {
-                        if(emailController.text.isEmpty){
-                          onFail(errorMsg: "Insira um e-mail válido para recuperar a senha", error: true);
-                        }
-                        else{
-                          model.recoverPass(emailController.text);
-                          onFail(errorMsg: "Confira seu e-mail!", error: false);
-                        }
-                      },
-                      padding: EdgeInsets.zero,
-                      child: Text(
-                        "Esqueci minha senha",
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                            fontSize: 12.0,
-                            color: Theme.of(context).buttonColor)
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  SizedBox(
-                    height: 44.0,
-                    child: RaisedButton(
-                      child: Text("Entrar", style: TextStyle(fontSize: 18.0)),
-                      textColor: Colors.white,
-                      color: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        if (formKey.currentState.validate()) {
-                          model.signIn(
-                              email: emailController.text,
-                              pass: passController.text,
-                              onSuccess: onSuccess,
-                              onFail: onFail);
-                        }
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text("Não possui conta?",
-                      style: TextStyle(fontSize: 12.0)),
-                      FlatButton(
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => SignUpScreen())
-                        );
-                      },
-                      child: Text(
-                        "Criar Conta", 
-                        style: TextStyle(
-                            fontSize: 12.0,
-                            color: Theme.of(context).buttonColor)
-                      ),
-                    ),
-                    ],
-                  ),
-                ],
-              ),
+                    animationStatus == 0 ?
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 80.0),
+                          child: InkWell(
+                            onTap: () {
+                              // if (formKey.currentState.validate()) {
+                              //   model.signIn(
+                              //     email: emailController.text,
+                              //     pass: passController.text,
+                              //     onSuccess: onSuccess,
+                              //     onFail: onFail);
+                              // }
+                              onSuccess();
+                            
+                            },
+                            child: CustomButton("Entrar"),
+                          ),
+                    )
+                  : StaggerAnimation(buttonController: loginButtonController.view),
+                  ],
+                ),
+              ],
             );
           },
         ));
   }
 
   void onSuccess() {
-    Navigator.of(context).pop();
+    setState(() {
+      animationStatus = 1; 
+    });
+    playAnimation();
   }
 
   void onFail({@required String errorMsg, @required bool error}) {
