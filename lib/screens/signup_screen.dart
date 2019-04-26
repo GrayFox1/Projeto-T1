@@ -5,6 +5,7 @@ import 'package:so_tops/screens/login_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:so_tops/widgets/custom_button.dart';
 
 
 final formKey = GlobalKey<FormState>();
@@ -98,33 +99,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 height: 10.0,
               ),
               SizedBox(height: 40.0),
-              SizedBox(
-                height: 44.0,
-                child: RaisedButton(
-                  child: Text("Cadastrar", style: TextStyle(fontSize: 18.0)),
-                  textColor: Colors.white,
-                  color: Theme.of(context).primaryColor,
-                  onPressed: () async {
+              Padding(
+                padding: const EdgeInsets.only( bottom: 20.0),
+                child: InkWell(
+                  onTap: () async{
                     if (formKey.currentState.validate()) {
-
-                      Map<String, dynamic> userData = {
-                        "name": nameController.text,
-                        "email": emailController.text,
-                        "foto": userFoto.path
-                      };
-
+                      
+                      Map<String, dynamic> userData;
+                      if(userFoto != null){
+                         userData = {
+                          "name": nameController.text,
+                          "email": emailController.text,
+                          "foto": userFoto.path
+                        };
+                      }
+                      else{
+                        userData = {
+                          "name": nameController.text,
+                          "email": emailController.text,
+                          "foto" : ""
+                        };
+                      }
+                      
                       model.signUp(
                           userData: userData,
                           pass: passController.text,
                           onSuccess: onSuccess,
-                          onFail: onFail);
+                          onFail: onFail
+                      );
                       
                     }
                   },
+                  child: CustomButton("Cadastrar"),
                 ),
               ),
-              SizedBox(height: 20.0),
-                  Row(
+
+               Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text("Já possui conta?",
@@ -144,6 +154,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     ],
                   ),
+              
+                 
             ],
           ),
         );
@@ -152,15 +164,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void onSuccess() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Usuário criado com sucesso!", 
-      textAlign: TextAlign.center,),
-      backgroundColor: Theme.of(context).primaryColor,
-      duration: Duration(seconds: 2),
-    ));
-    Future.delayed(Duration(seconds: 2)).then((_) {
-      Navigator.of(context).pop();
-    });
+    Navigator.of(context).pop();
+  
   }
 
   void onFail({@required String errorMsg, @required bool error}) {

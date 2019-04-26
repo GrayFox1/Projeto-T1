@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:so_tops/screens/edit_screen.dart';
-import 'package:so_tops/screens/signup_screen.dart';
 import 'package:so_tops/tabs/dicas_tab.dart';
-import 'package:so_tops/tabs/filmes_tab.dart';
 import 'package:so_tops/tabs/home_tab.dart';
 import 'package:so_tops/widgets/custom_drawer.dart';
 import 'package:so_tops/widgets/user_avatar.dart';
@@ -16,7 +14,7 @@ class HomeScreen extends StatelessWidget {
       controller: pageController,
       physics: NeverScrollableScrollPhysics(),
       children: <Widget>[
-        Scaffold(    // TELA 1 (HOME)
+        Scaffold(   // TELA 1 (Só Tops)
           appBar: AppBar(
             title: Text("Só Tops"),
             centerTitle: true,
@@ -27,29 +25,7 @@ class HomeScreen extends StatelessWidget {
           body: HomeTab(),
           drawer: CustomDrawer(pageController),
         ),
-        Scaffold(   // TELA 2 (FILMES)
-          appBar: AppBar(
-            title: Text("Filmes"),
-            centerTitle: true,
-            actions: <Widget>[
-              UserAvatar(),
-            ],
-          ),
-          body: FilmesTab(),
-          drawer: CustomDrawer(pageController),
-        ),
-        Scaffold(   // TELA 3 (Jogos)
-          appBar: AppBar(
-            title: Text("Jogos"),
-            centerTitle: true,
-            actions: <Widget>[
-              UserAvatar(),
-            ],
-          ),
-          body: Container(),
-          drawer: CustomDrawer(pageController),
-        ),
-        Scaffold(    // TELA 4 (Dicas)
+        Scaffold(    // TELA 2 (Dicas)
           appBar: AppBar(
             title: Text("Dicas"),
             centerTitle: true,
@@ -60,7 +36,7 @@ class HomeScreen extends StatelessWidget {
           body: DicasTab(),
           drawer: CustomDrawer(pageController),
         ),
-        Scaffold(    // TELA 5 (Favoritos)
+        Scaffold(    // TELA 3 (Favoritos)
           appBar: AppBar(
             title: Text("Favoritos"),
             centerTitle: true,
@@ -71,7 +47,7 @@ class HomeScreen extends StatelessWidget {
           body: Container(),
           drawer: CustomDrawer(pageController),
         ),
-        Scaffold(    // TELA 6 (Editar Perfil)
+        Scaffold(    // TELA 4 (Editar Perfil)
           body: EditScreen(),
         ),
       ],

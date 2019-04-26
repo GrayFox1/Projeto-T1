@@ -6,6 +6,7 @@ import 'package:so_tops/screens/login_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:so_tops/widgets/custom_button.dart';
 import 'package:so_tops/widgets/user_avatar.dart';
 
 
@@ -60,7 +61,7 @@ class _EditScreenState extends State<EditScreen> {
                     image: DecorationImage(
                       fit: BoxFit.cover,
                       image: userFoto != null ? 
-                    FileImage(File(userFoto.path)) : model.userData["foto"] != null ?  NetworkImage(model.userData["foto"]) : AssetImage("assets/user.png"),
+                    FileImage(File(userFoto.path)) : model.userData["foto"] != "" ?  NetworkImage(model.userData["foto"]) : AssetImage("assets/user.png") ,
                     ),
                   ),
                 ),
@@ -77,15 +78,12 @@ class _EditScreenState extends State<EditScreen> {
                 },
               ),
               SizedBox(height: 50.0),
-              SizedBox(
-                height: 44.0,
-                child: RaisedButton(
-                  child: Text("Atualizar", style: TextStyle(fontSize: 18.0)),
-                  textColor: Colors.white,
-                  color: Theme.of(context).primaryColor,
-                  onPressed: () async {
-                    if (formKey.currentState.validate()) {
 
+              Container(
+                padding: const EdgeInsets.only(bottom: 80.0),
+                child: InkWell(
+                  onTap: () {
+                    if (formKey.currentState.validate()) {
                       Map<String, dynamic> userData;
 
                       if(userFoto != null){
@@ -103,11 +101,12 @@ class _EditScreenState extends State<EditScreen> {
                       
                       model.updateUserData(userData);
                       Navigator.of(context).pop();
-                      
                     }
                   },
+                  child: CustomButton("Atualizar"),
                 ),
               ),
+                
               SizedBox(height: 20.0),
             ],
           ),

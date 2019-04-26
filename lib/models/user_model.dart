@@ -35,7 +35,6 @@ class UserModel extends Model {
         notifyListeners();
 
       } catch (e){
-        print(e.message);
         onFail(errorMsg: e.message, error: true);
         isLoading = false;
         notifyListeners();
@@ -54,7 +53,6 @@ class UserModel extends Model {
         notifyListeners();
 
       } catch (e){
-        print(e.message);
         onFail(errorMsg: e.message, error: true);
         isLoading = false;
         notifyListeners(); 

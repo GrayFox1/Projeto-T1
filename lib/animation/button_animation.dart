@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:so_tops/models/user_model.dart';
 
 class StaggerAnimation extends StatelessWidget {
@@ -34,7 +33,7 @@ class StaggerAnimation extends StatelessWidget {
         ),
         containerCircleAnimation = EdgeInsetsTween(
           begin: const EdgeInsets.only(bottom: 80.0),
-          end: const EdgeInsets.only(bottom: 0.0),
+          end: const EdgeInsets.only(top: 0.0, bottom: 0.0),
         )
             .animate(
           CurvedAnimation(
@@ -56,14 +55,14 @@ class StaggerAnimation extends StatelessWidget {
   Future<Null> _playAnimation() async {
     try {
       await buttonController.forward();
-      await buttonController.reverse();
+      //await buttonController.reverse();
     } on TickerCanceled {}
   }
 
   Widget _buildAnimation(BuildContext context, Widget child) {
     return Padding(
       padding: buttomZoomOut.value == 70
-          ? const EdgeInsets.only(bottom: 80.0)
+          ? const EdgeInsets.only(top: 0.0, bottom: 80.0)
           : containerCircleAnimation.value,
       child: InkWell(
           onTap: () {

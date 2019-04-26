@@ -52,7 +52,7 @@ class CustomDrawer extends StatelessWidget {
                                     
                                     fit: BoxFit.cover,
                                     image: model.isLoggedIn()
-                                        ? NetworkImage(model.userData["foto"])
+                                        ? model.userData["foto"] != "" ? NetworkImage(model.userData["foto"]) : AssetImage("assets/user.png")
                                         : AssetImage("assets/user.png"),
                                   ),
                                 ),
@@ -89,12 +89,10 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
               Divider(),
-              DrawerTile(FontAwesomeIcons.home, "Início", pageController, 0),
-              DrawerTile(FontAwesomeIcons.film, "Filmes", pageController, 1),
-              DrawerTile(FontAwesomeIcons.gamepad, "Jogos", pageController, 2),
-              DrawerTile(Icons.location_on, "Dicas", pageController, 3),
+              DrawerTile(FontAwesomeIcons.home, "Início", pageController, 0),  
+              DrawerTile(Icons.location_on, "Dicas", pageController, 1),
               DrawerTile(
-                  FontAwesomeIcons.solidStar, "Favoritos", pageController, 4),
+                  FontAwesomeIcons.solidStar, "Favoritos", pageController, 2),
               Container(
                 child: ScopedModelDescendant<UserModel>(
                   builder: (context, child, model){
@@ -102,7 +100,7 @@ class CustomDrawer extends StatelessWidget {
                     return model.isLoggedIn() ?
                     Column(
                       children: <Widget>[
-                        DrawerTile(FontAwesomeIcons.userEdit, "Editar Perfil",pageController, 5),
+                        DrawerTile(FontAwesomeIcons.userEdit, "Editar Perfil",pageController, 3),
                         DrawerTile(FontAwesomeIcons.signOutAlt, "Sair",pageController, 0)
                       ],
                     ) : Container(); 

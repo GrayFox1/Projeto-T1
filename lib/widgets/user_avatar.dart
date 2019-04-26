@@ -19,8 +19,8 @@ class UserAvatar extends StatelessWidget {
               image: DecorationImage(
                 fit: BoxFit.cover,
                 image: model.isLoggedIn()
-                    ? NetworkImage(model.userData["foto"])
-                    : AssetImage("assets/user.png"),
+                    ? model.userData["foto"] != "" ? NetworkImage(model.userData["foto"]) : AssetImage("assets/user.png")
+                                        : AssetImage("assets/user.png"),
               ),
             ),
           );

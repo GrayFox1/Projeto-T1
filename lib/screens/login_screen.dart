@@ -10,7 +10,8 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final emailController = TextEditingController();
@@ -19,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   AnimationController loginButtonController;
   var animationStatus = 0;
 
-   Future<Null> playAnimation() async {
+  Future<Null> playAnimation() async {
     try {
       await loginButtonController.forward();
       await loginButtonController.reverse();
@@ -30,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   void initState() {
     super.initState();
     loginButtonController = new AnimationController(
-      duration: Duration(milliseconds: 3000), 
+      duration: Duration(milliseconds: 3000),
       vsync: this,
     );
   }
@@ -55,7 +56,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 150.0),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 50.0, vertical: 150.0),
                           child: Form(
                             key: formKey,
                             child: Column(
@@ -64,18 +66,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                 TextFormField(
                                   controller: emailController,
                                   decoration: InputDecoration(
-                                  hintText: "E-mail",
+                                    hintText: "E-mail",
                                   ),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (text) {
-                                    if(text.isEmpty || !text.contains("@"))
+                                    if (text.isEmpty || !text.contains("@"))
                                       return "E-mail inválido!";
                                   },
                                 ),
                                 SizedBox(height: 10.0),
                                 TextFormField(
                                   controller: passController,
-                                  decoration: InputDecoration(hintText: "Senha"),
+                                  decoration:
+                                      InputDecoration(hintText: "Senha"),
                                   obscureText: true,
                                   validator: (text) {
                                     if (text.isEmpty || text.length < 4)
@@ -86,22 +89,25 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                   alignment: Alignment.centerRight,
                                   child: FlatButton(
                                     onPressed: () {
-                                      if(emailController.text.isEmpty){
-                                        onFail(errorMsg: "Insira um e-mail válido para recuperar a senha", error: true);
-                                      }
-                                      else{
+                                      if (emailController.text.isEmpty) {
+                                        onFail(
+                                            errorMsg:
+                                                "Insira um E-mail válido para recuperar a senha",
+                                            error: true);
+                                      } else {
                                         model.recoverPass(emailController.text);
-                                        onFail(errorMsg: "Confira seu e-mail!", error: false);
+                                        onFail(
+                                            errorMsg: "Confira seu e-mail!",
+                                            error: false);
                                       }
                                     },
-                                  padding: EdgeInsets.zero,
-                                  child: Text(
-                                    "Esqueci minha senha",
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                    fontSize: 12.0,
-                                    color: Theme.of(context).buttonColor)
-                                  ),
+                                    padding: EdgeInsets.zero,
+                                    child: Text("Esqueci minha senha",
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                            fontSize: 12.0,
+                                            color:
+                                                Theme.of(context).buttonColor)),
                                   ),
                                 ),
                               ],
@@ -110,25 +116,41 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         ),
                       ],
                     ),
-                    animationStatus == 0 ?
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 80.0),
-                          child: InkWell(
-                            onTap: () {
-                              // if (formKey.currentState.validate()) {
-                              //   model.signIn(
-                              //     email: emailController.text,
-                              //     pass: passController.text,
-                              //     onSuccess: onSuccess,
-                              //     onFail: onFail);
-                              // }
-                              onSuccess();
-                            
+                    animationStatus == 0
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 80.0),
+                            child: InkWell(
+                              onTap: () {
+                                if (formKey.currentState.validate()) {
+                                  model.signIn(
+                                    email: emailController.text,
+                                    pass: passController.text,
+                                    onSuccess: onSuccess,
+                                    onFail: onFail);
+                                }
+                              },
+                              child: CustomButton("Entrar"),
+                            ),
+                          )
+                        : StaggerAnimation(
+                            buttonController: loginButtonController.view),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text("Não possui conta?",
+                              style: TextStyle(fontSize: 12.0)),
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => SignUpScreen()));
                             },
-                            child: CustomButton("Entrar"),
+                            child: Text("Criar Conta",
+                                style: TextStyle(
+                                    fontSize: 12.0,
+                                    color: Theme.of(context).buttonColor)),
                           ),
-                    )
-                  : StaggerAnimation(buttonController: loginButtonController.view),
+                        ]),
                   ],
                 ),
               ],
@@ -139,15 +161,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   void onSuccess() {
     setState(() {
-      animationStatus = 1; 
+      animationStatus = 1;
     });
     playAnimation();
   }
 
   void onFail({@required String errorMsg, @required bool error}) {
     scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(errorMsg, textAlign: TextAlign.center,),
-      backgroundColor: (error) ? Colors.redAccent : Theme.of(context).primaryColor,
+      content: Text(
+        errorMsg,
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor:
+          (error) ? Colors.redAccent : Theme.of(context).primaryColor,
       duration: Duration(seconds: 2),
     ));
   }
