@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:so_tops/screens/edit_screen.dart';
+import 'package:so_tops/tabs/dicas_tab.dart';
 import 'package:so_tops/tabs/home_tab.dart';
 import 'package:so_tops/widgets/custom_drawer.dart';
 import 'package:so_tops/widgets/user_avatar.dart';
@@ -32,7 +33,7 @@ class HomeScreen extends StatelessWidget {
               UserAvatar(),
             ],
           ),
-          body: Container(),
+          body: DicasTab(),
           drawer: CustomDrawer(pageController),
         ),
         Scaffold(    // TELA 3 (Favoritos)
