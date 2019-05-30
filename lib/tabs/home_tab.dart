@@ -391,7 +391,7 @@ Widget obterImagem(Map<String, dynamic> obj) {
   }
 
   if (nomeImagem == null) {
-    return Image.asset('assets/imagens/sem-foto.jpg', fit: BoxFit.cover);
+    return Image.asset('assets/sem-foto.jpg', fit: BoxFit.cover);
   }
 
   return Image.network(Configuracao.obterUrlImagem() + nomeImagem,
