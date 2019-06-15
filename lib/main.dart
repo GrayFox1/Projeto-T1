@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         title: 'Só Tops',
         theme: ThemeData(
           //primarySwatch: Colors.blue,
-          primaryColor: Color(0XFF233142),
+          primaryColor: Color(0XFF233142), // 233142
           buttonColor: Color(0XFF4f9da6)
           
         ),
