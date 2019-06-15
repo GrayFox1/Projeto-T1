@@ -4,7 +4,6 @@ import 'package:so_tops/models/user_model.dart';
 import 'package:so_tops/screens/login_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:so_tops/widgets/custom_button.dart';
 
 
@@ -216,7 +215,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         onPressed: () {
                           Navigator.pop(context);
-                          ImagePicker.pickImage(source: ImageSource.gallery)
+                          ImagePicker.pickImage(source: ImageSource.gallery, maxWidth: 1920)
                               .then((file) {
                             if (file == null) return;
                             setState(() {
